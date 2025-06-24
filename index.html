@@ -2,25 +2,115 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TransStadia Chatbot</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TransStadia Career Guidance Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      padding: 20px;
+    }
+    #chatbox {
+      width: 100%;
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    #chat {
+      min-height: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+    .bot, .user {
+      margin-bottom: 10px;
+    }
+    .bot {
+      color: #333;
+    }
+    .user {
+      text-align: right;
+      color: #007bff;
+    }
+    form {
+      display: flex;
+      gap: 10px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 8px;
+      font-size: 16px;
+    }
+    button {
+      padding: 8px 12px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
-  <div class="chat-container">
-    <div class="chat-box" id="chat-box"></div>
-    <div class="input-group">
-      <input type="text" id="user-input" placeholder="Type your message..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
+  <div id="chatbox">
+    <h2>TransStadia Career Guidance Chatbot</h2>
+    <div id="chat"></div>
+    <form id="chat-form">
+      <input type="text" id="user-input" placeholder="Type your message..." required />
+      <button type="submit">Send</button>
+    </form>
   </div>
 
-  <script src="chatbot.js"></script>
-  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-  <script>
-    (function(){
-      emailjs.init("YOUR_EMAILJS_USER_ID"); // Replace with your EmailJS user ID
-    })();
+  <script type="module">
+    import chatbotIntents from './intents.js';
+
+    const chat = document.getElementById('chat');
+    const form = document.getElementById('chat-form');
+    const input = document.getElementById('user-input');
+
+    function addMessage(sender, message) {
+      const div = document.createElement('div');
+      div.className = sender;
+      div.innerText = `${sender === 'user' ? 'You' : 'Bot'}: ${message}`;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const message = input.value.trim();
+      if (!message) return;
+
+      addMessage('user', message);
+
+      let found = false;
+      for (let intent of chatbotIntents) {
+        if (intent.trainingPhrases.some(p =>
+          message.toLowerCase().includes(p.toLowerCase())
+        )) {
+          const response = intent.responses[Math.floor(Math.random() * intent.responses.length)];
+          setTimeout(() => addMessage('bot', response), 600);
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) {
+        setTimeout(() => addMessage('bot', "I'm sorry, I didn't understand that. Can you rephrase?"), 600);
+      }
+
+      input.value = '';
+    });
+
+    // Greet on load
+    window.onload = () => {
+      addMessage('bot', "Hi! I’m your course advisor. How can I help you today?");
+    };
   </script>
 </body>
 </html>
