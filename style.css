@@ -1,0 +1,30 @@
+.chat-container {
+  width: 400px;
+  margin: 50px auto;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+.chat-box {
+  height: 400px;
+  overflow-y: scroll;
+  padding: 10px;
+  background: #f9f9f9;
+}
+.input-group {
+  display: flex;
+  border-top: 1px solid #ccc;
+}
+.input-group input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+}
+.input-group button {
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
